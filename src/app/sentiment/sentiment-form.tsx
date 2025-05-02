@@ -1,16 +1,16 @@
 'use client'
 
-import { getWeatherInfo } from './actions'
 import { useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
-import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
+import { getSentimentInfo } from '@/app/sentiment/actions'
+import { Textarea } from '@/components/ui/textarea'
 
 type Inputs = {
-  city: string
+  text: string
 }
 
-export function WeatherForm() {
+export function SentimentForm() {
   const [response, setResponse] = useState<string>();
 
   const {
@@ -21,24 +21,22 @@ export function WeatherForm() {
   } = useForm<Inputs>()
 
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
-    const weather = await getWeatherInfo(data.city);
-    setResponse(weather);
+    const response = await getSentimentInfo(data.text);
+    setResponse(response);
     reset();
   }
 
   return (
     <>
-      <h1 className="mb-6 text-2xl font-bold text-center text-gray-900 dark:text-white">Weather Information</h1>
-
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         <div className="space-y-2">
-          <label htmlFor="city" className="text-sm font-medium text-gray-700 dark:text-gray-300">
-            City Name
+          <label htmlFor="text" className="text-sm font-medium text-gray-700 dark:text-gray-300">
+            Tweet
           </label>
-          <Input
-            id="city"
-            placeholder="Enter city name"
-            {...register("city", { required: true })}
+          <Textarea
+            id="text"
+            placeholder="Enter text"
+            {...register("text", { required: true })}
             className="w-full"
           />
         </div>
@@ -47,7 +45,7 @@ export function WeatherForm() {
           className="w-full"
           isLoading={isSubmitting}
         >
-          Get Weather
+          Get Sentiment
         </Button>
       </form>
 
